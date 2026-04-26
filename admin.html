@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="pt-PT">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painel Admin | Central Silos</title>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/browser-image-compression@2.0.2/dist/browser-image-compression.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    
+    <link rel="stylesheet" href="style.css">
+    
+    <style>
+        :root { --yellow: #f4ea8c; --dark: #0a0a0a; --card: #161616; --red: rgba(255, 77, 77, 0.8); }
+        body { background-color: var(--dark); color: white; font-family: sans-serif; margin: 0; }
+        
+        /* Navbar fix */
+        #navbar { position: fixed; top:0; width: 100%; z-index: 100; background: var(--dark); border-bottom: 1px solid #222; }
+
+        /* Lock Screen */
+        #lock-screen {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: var(--dark); display: flex; justify-content: center; align-items: center; z-index: 9999;
+        }
+        .lock-box { background: var(--card); padding: 30px; border-radius: 20px; text-align: center; border: 1px solid #333; }
+        
+        /* Layout Admin */
+        .admin-container { padding: 100px 20px 40px; display: flex; flex-direction: column; align-items: center; min-height: 100vh; }
+        .admin-card { background: var(--card); padding: 25px; border-radius: 15px; width: 100%; max-width: 500px; text-align: center; border: 1px solid #333; margin-bottom: 20px; overflow: hidden; }
+        
+        input[type="file"] { display: none; }
+        .btn-yellow { background: var(--yellow); color: black; padding: 12px 20px; border-radius: 8px; font-weight: bold; cursor: pointer; border: none; display: inline-block; margin-top: 10px; }
+        
+        /* Grelha de Gestão */
+        .gestao-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            gap: 15px;
+            width: 100%;
+            margin-top: 20px;
+        }
+        
+        .foto-item {
+            position: relative;
+            width: 100%;
+            aspect-ratio: 1 / 1;
+            overflow: hidden;
+            border-radius: 12px;
+            border: 1px solid #333;
+            background: #000;
+        }
+
+        .foto-item img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.4s ease; }
+        
+        /* Overlay Vermelho com a Cruz */
+        .foto-overlay {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: var(--red); display: flex; justify-content: center; align-items: center;
+            opacity: 0; transition: opacity 0.3s ease; z-index: 10;
+        }
+
+        .btn-delete {
+            background: none; border: none; color: white !important;
+            font-size: 60px; font-weight: 100; cursor: pointer;
+            line-height: 1; font-family: Arial, sans-serif;
+            transition: transform 0.2s ease;
+        }
+
+       
+        .btn-delete:hover { transform: scale(1.2); }
+
+        /* Remove ou substitui a regra @media anterior por esta */
+@media (max-width: 600px) {
+    .gestao-grid { grid-template-columns: repeat(2, 1fr); }
+    
+    /* No mobile, o overlay só aparece quando a classe .active for adicionada */
+    .foto-item.active .foto-overlay {
+        opacity: 1;
+    }
+}
+
+/* Garante que o overlay bloqueia cliques na imagem por trás quando ativo */
+.foto-overlay {
+    pointer-events: none; /* Desativado por padrão */
+}
+
+.foto-item.active .foto-overlay,
+.foto-item:hover .foto-overlay {
+    opacity: 1;
+    pointer-events: auto; /* Ativa os cliques quando visível */
+}
+    </style>
+</head>
+<body>
+
+<nav id="navbar">
+    <div class="nav-container">
+        <a href="index.html">
+            <img src="imagem_centralsilos.jpg" alt="Logo" class="logo-img" onerror="this.src='https://via.placeholder.com/50x50/f4ea8c/000000?text=CS'">
+        </a>
+        <ul class="nav-list">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="album.html">Momentos</a></li>
+            <li><a href="#" onclick="logout()">Sair</a></li>
+        </ul>
+    </div>
+</nav>
+
+<div id="lock-screen">
+    <div class="lock-box">
+        <h2 style="color: var(--yellow)">ADMIN SILOS</h2>
+        <input type="password" id="admin-pass" placeholder="Palavra-passe" style="padding: 10px; width: 80%; margin: 15px 0; border-radius: 5px; border: none;">
+        <br>
+        <button onclick="verificarPass()" class="btn-yellow">ENTRAR</button>
+    </div>
+</div>
+
+<div class="admin-container">
+    <div class="admin-card">
+        <h2 style="color: var(--yellow)">Upload de Fotos</h2>
+        <label for="upload-input" class="btn-yellow">Escolher Fotos</label>
+        <input type="file" id="upload-input" accept="image/*" multiple>
+        <div id="status-area" style="margin-top: 15px; font-size: 0.9rem; color: #888;"></div>
+    </div>
+
+    <div class="admin-card">
+        <h2 style="color: var(--yellow); font-size: 1.2rem;">Gestão da Galeria</h2>
+        <div id="admin-gallery" class="gestao-grid"></div>
+    </div>
+</div>
+
+<script>
+    const SUPABASE_URL = 'https://ndhdrupwndquqdkafscx.supabase.co';
+    const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5kaGRydXB3bmRxdXFka2Fmc2N4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY5NTE0MjIsImV4cCI6MjA5MjUyNzQyMn0.r6nfXXCiRaHAJgjb70Jmq_yzVTBpf417H0ygvoD3EbM';
+    const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+    // 1. LOGIN
+    window.verificarPass = async function() {
+        const email = "santiagobpedrosa@gmail.com";
+        const password = document.getElementById('admin-pass').value;
+
+        const { data, error } = await _supabase.auth.signInWithPassword({ email, password });
+
+        if (error) {
+            alert("Erro: " + error.message);
+        } else {
+            document.getElementById('lock-screen').style.display = 'none';
+            listarFotosAdmin();
+        }
+    };
+
+    // 2. LISTAR FOTOS
+    window.listarFotosAdmin = async function() {
+        const gallery = document.getElementById('admin-gallery');
+        gallery.innerHTML = "Carregando...";
+
+        const { data, error } = await _supabase.storage
+            .from('fotos-album')
+            .list('', { limit: 100, sortBy: { column: 'created_at', order: 'desc' } });
+
+        if (error) return;
+
+        gallery.innerHTML = "";
+        data.forEach(foto => {
+            if (foto.name === ".emptyFolderPlaceholder") return;
+            const { data: { publicUrl } } = _supabase.storage.from('fotos-album').getPublicUrl(foto.name);
+
+            const div = document.createElement('div');
+            div.className = 'foto-item';
+            div.innerHTML = `
+                <img src="${publicUrl}">
+                <div class="foto-overlay" onclick="removerFoto('${foto.name}')">
+                    <button class="btn-delete">×</button>
+                </div>
+            `;
+            gallery.appendChild(div);
+        });
+    };
+
+    // 3. REMOVER FOTO
+    window.removerFoto = async function(nome) {
+        if (!confirm("Apagar esta foto permanentemente?")) return;
+        const { error } = await _supabase.storage.from('fotos-album').remove([nome]);
+        if (error) alert("Erro ao apagar!");
+        else listarFotosAdmin();
+    };
+
+    // 4. LOGOUT
+    window.logout = async function() {
+        await _supabase.auth.signOut();
+        window.location.reload();
+    };
+
+    // 5. UPLOAD COM COMPRESSÃO
+    document.getElementById('upload-input').addEventListener('change', async (e) => {
+        const files = e.target.files;
+        const status = document.getElementById('status-area');
+        if (files.length === 0) return;
+
+        const options = { maxSizeMB: 0.8, maxWidthOrHeight: 1920, useWebWorker: true };
+
+        for (const file of files) {
+            try {
+                status.innerHTML = `Otimizando ${file.name}...`;
+                const compressedFile = await imageCompression(file, options);
+                const fileName = `${Date.now()}-${file.name.replace(/\s/g, '_')}`;
+                
+                status.innerHTML = `Enviando ${file.name}...`;
+                await _supabase.storage.from('fotos-album').upload(fileName, compressedFile);
+            } catch (err) {
+                console.error(err);
+            }
+        }
+        status.innerHTML = "✅ Fotos Adicionadas!";
+        listarFotosAdmin();
+    });
+
+    // Verificar sessão ao carregar
+    async function checkUser() {
+        const { data: { session } } = await _supabase.auth.getSession();
+        if (session) {
+            document.getElementById('lock-screen').style.display = 'none';
+            listarFotosAdmin();
+        }
+    }
+    checkUser();
+</script>
+
+</body>
+</html>

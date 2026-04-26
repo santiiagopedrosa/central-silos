@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="pt-PT">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Álbum Central Silos | Caldas da Rainha</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body class="album-body">
+
+    <nav id="navbar">
+    <div class="nav-container">
+
+        <a href="index.html">
+            <img src="imagem_centralsilos.jpg" alt="Logo Central Silos" class="logo-img" onerror="this.src='https://via.placeholder.com/50x50/f4ea8c/000000?text=CS'">
+        </a>
+        
+        <ul class="nav-list">
+            <li><a href="index.html">Home</a></li>
+          <li><a href="admin.html">ADMIN</a></li>
+        </ul>
+
+        
+
+        <div class="menu-toggle" id="mobile-menu">
+            <span class="bar"></span>
+            <span class="bar"></span>
+            <span class="bar"></span>
+        </div>
+
+    </div>
+</nav>
+
+    <header class="album-intro">
+        <h1 class="scroll-reveal">GALERIA <span>SILOS</span></h1>
+        <p class="scroll-reveal">O recap visual das melhores noites das Caldas.</p>
+    </header>
+
+    <section class="album-wrapper">
+        <div id="grid-principal" class="photo-grid">
+            
+            </div>
+
+        <div id="status-carregamento" style="text-align:center; color:#666; margin-top:20px;">
+            A procurar novas fotos...
+        </div>
+    </section>
+
+    <footer class="album-footer">
+        <p>BAR CENTRAL SILOS • 2026</p>
+    </footer>
+
+    <script src="script.js"></script>
+
+    <script>
+        const SUPABASE_URL = 'https://ndhdrupwndquqdkafscx.supabase.co'; 
+        const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5kaGRydXB3bmRxdXFka2Fmc2N4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY5NTE0MjIsImV4cCI6MjA5MjUyNzQyMn0.r6nfXXCiRaHAJgjb70Jmq_yzVTBpf417H0ygvoD3EbM';
+        const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+        async function carregarFotosDoStorage() {
+            const grid = document.getElementById('grid-principal');
+            const status = document.getElementById('status-carregamento');
+            
+            const { data, error } = await _supabase.storage
+                .from('fotos-album')
+                .list('', { // Lista a raiz do bucket
+                    limit: 30,
+                    sortBy: { column: 'created_at', order: 'desc' }
+                });
+
+            if (error) {
+                console.error("Erro Supabase:", error.message);
+                status.innerText = "Erro ao carregar fotos.";
+                return;
+            }
+
+            if (data && data.length > 0) {
+                status.style.display = "none"; // Esconde o aviso de carregamento
+
+                data.forEach(foto => {
+                    // Ignora ficheiros de sistema do Supabase
+                    if (foto.name === ".emptyFolderPlaceholder") return;
+
+                    const { data: { publicUrl } } = _supabase.storage
+                        .from('fotos-album')
+                        .getPublicUrl(foto.name);
+
+                    // Cria o card da foto
+                    const div = document.createElement('div');
+                    div.className = 'photo-card scroll-reveal active';
+                    div.innerHTML = `<img src="${publicUrl}" alt="Silos Upload">`;
+                    
+                    // ADICIONA À GRELHA PRINCIPAL (Abaixo das fotos do Instagram)
+                    grid.appendChild(div);
+                });
+            } else {
+                status.innerText = "Ainda não há fotos carregadas no Storage.";
+            }
+        }
+
+        // Inicia a função
+        carregarFotosDoStorage();
+        
+    // Função que aplica o efeito de observação
+    function aplicarEfeitoScroll() {
+        const observerOptions = {
+            threshold: 0.1 // Ativa quando 10% da imagem está visível
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('reveal');
+                    // Se quiseres que a animação aconteça apenas uma vez, desativa o "unobserve":
+                    // observer.unobserve(entry.target); 
+                } else {
+                    // Opcional: Remove a classe para a foto "esconder" outra vez quando sobes a página
+                    entry.target.classList.remove('reveal');
+                }
+            });
+        }, observerOptions);
+
+        // Seleciona todas as fotos (estáticas e dinâmicas)
+        const photos = document.querySelectorAll('.photo-card');
+        photos.forEach(photo => observer.observe(photo));
+    }
+
+    // --- IMPORTANTE ---
+    // Se estás a carregar fotos do Supabase, tens de chamar esta função 
+    // DEPOIS das fotos serem injetadas no HTML.
+    
+    // No teu código de listar fotos, no final do loop data.forEach, adiciona:
+    // setTimeout(aplicarEfeitoScroll, 100);
+
+    </script>
+</body>
+</html>
