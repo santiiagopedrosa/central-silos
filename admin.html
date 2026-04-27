@@ -173,40 +173,95 @@
     };
 
     // 2. LISTAR FOTOS
-    window.listarFotosAdmin = async function() {
-        const gallery = document.getElementById('admin-gallery');
-        gallery.innerHTML = "Carregando...";
+  window.listarFotosAdmin = async function() {
+    const gallery = document.getElementById('admin-gallery');
+    gallery.innerHTML = "<p style='color:#888;'>A carregar galeria...</p>";
 
-        const { data, error } = await _supabase.storage
-            .from('fotos-album')
-            .list('', { limit: 100, sortBy: { column: 'created_at', order: 'desc' } });
+    // 1. Ir buscar a lista de fotos
+    const { data, error } = await _supabase.storage
+        .from('fotos-album')
+        .list('', { limit: 150, sortBy: { column: 'name', order: 'desc' } });
 
-        if (error) return;
+    if (error) {
+        gallery.innerHTML = "Erro ao carregar fotos.";
+        return;
+    }
 
-        gallery.innerHTML = "";
-        data.forEach(foto => {
-            if (foto.name === ".emptyFolderPlaceholder") return;
+    gallery.innerHTML = ""; // Limpa o carregamento
+
+    // 2. Agrupar fotos por data (igual ao álbum)
+    const fotosAgrupadas = {};
+
+    data.forEach(foto => {
+        if (foto.name === ".emptyFolderPlaceholder") return;
+        
+        let dataChave = foto.name.includes('__') 
+            ? foto.name.split('__')[0] 
+            : foto.created_at.split('T')[0];
+
+        if (!fotosAgrupadas[dataChave]) fotosAgrupadas[dataChave] = [];
+        fotosAgrupadas[dataChave].push(foto);
+    });
+
+    // 3. Renderizar os grupos
+    const datasOrdenadas = Object.keys(fotosAgrupadas).sort().reverse();
+
+    datasOrdenadas.forEach(dataTxt => {
+        const fotos = fotosAgrupadas[dataTxt];
+
+        // Título do Dia
+        const dataObj = new Date(dataTxt);
+        const dataFormatada = dataObj.toLocaleDateString('pt-PT', { 
+            weekday: 'short', day: '2-digit', month: 'short' 
+        });
+
+        const header = document.createElement('h3');
+        header.className = 'admin-dia-header';
+        header.innerText = dataFormatada;
+        gallery.appendChild(header);
+
+        // Grelha do Dia
+        const diaGrid = document.createElement('div');
+        diaGrid.className = 'admin-dia-wrapper';
+
+        fotos.forEach(foto => {
             const { data: { publicUrl } } = _supabase.storage.from('fotos-album').getPublicUrl(foto.name);
 
             const div = document.createElement('div');
-            div.className = 'foto-item';
+            div.className = 'foto-item'; // Mantém as tu.as classes de hover/delete
             div.innerHTML = `
                 <img src="${publicUrl}">
                 <div class="foto-overlay" onclick="removerFoto('${foto.name}')">
                     <button class="btn-delete">×</button>
                 </div>
             `;
-            gallery.appendChild(div);
+            
+            // Para mobile: permitir clique para ativar overlay
+            div.onclick = function() {
+                document.querySelectorAll('.foto-item').forEach(el => el.classList.remove('active'));
+                this.classList.toggle('active');
+            };
+
+            diaGrid.appendChild(div);
         });
-    };
+
+        gallery.appendChild(diaGrid);
+    });
+};
 
     // 3. REMOVER FOTO
-    window.removerFoto = async function(nome) {
-        if (!confirm("Apagar esta foto permanentemente?")) return;
-        const { error } = await _supabase.storage.from('fotos-album').remove([nome]);
-        if (error) alert("Erro ao apagar!");
-        else listarFotosAdmin();
-    };
+ window.removerFoto = async function(nome) {
+    if (!confirm("Apagar esta foto permanentemente?")) return;
+    
+    const { error } = await _supabase.storage.from('fotos-album').remove([nome]);
+    
+    if (error) {
+        alert("Erro ao apagar!");
+    } else {
+        // Recarrega a galeria organizada
+        listarFotosAdmin();
+    }
+};
 
     // 4. LOGOUT
     window.logout = async function() {

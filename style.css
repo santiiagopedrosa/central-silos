@@ -493,20 +493,22 @@ footer p { color: var(--text-muted); margin-top: 20px; font-size: 0.9rem; }
 }
 
 .admin-dia-header {
-    width: 100%;
-    color: var(--yellow);
-    text-align: left;
-    margin: 30px 0 15px 0;
-    font-size: 1rem;
-    text-transform: uppercase;
-    border-bottom: 1px solid #333;
-    padding-bottom: 5px;
+    display: block !important;
+    visibility: visible !important;
+    color: #f4ea8c !important; /* Amarelo Silos forçado */
+    font-size: 1rem !important;
+    font-weight: bold !important;
+    margin: 30px 0 15px 0 !important;
+    padding-bottom: 10px !important;
+    border-bottom: 1px solid #333 !important;
+    text-align: left !important;
+    clear: both !important;
+    opacity: 1 !important;
 }
 
 #admin-gallery {
-    display: block; /* Importante para as secções ficarem uma por baixo da outra */
-    width: 100%;
-    text-align: left;
+    display: block !important;
+    overflow: visible !important;
 }
 
 /* Ajuste para Tablets (4 colunas) */
