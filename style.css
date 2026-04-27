@@ -86,8 +86,6 @@ nav a:hover {
     letter-spacing: 1px;
 }
 
-
-
 /* Hero Section */
 .hero {
     height: 100vh;
@@ -638,47 +636,35 @@ footer p { color: var(--text-muted); margin-top: 20px; font-size: 0.9rem; }
 }
 /* MENU MOBILE */
 @media (max-width: 768px) {
-    /* Garante que a barra tem uma altura fixa para não deformar */
-    nav {
-        height: 70px !important;
-        display: flex;
+    .nav-list {
+        display: none; /* Esconde por padrão */
+        flex-direction: column;
+        position: fixed;
+        top: 0;
+        right: 0;
+        width: 100%;
+        height: 100vh;
+        background: rgba(10, 10, 10, 0.98);
+        justify-content: center;
         align-items: center;
+        z-index: 999;
+        gap: 40px;
     }
 
-    .nav-container {
-        display: flex !important;
-        flex-direction: row !important; /* Força linha, nunca coluna */
-        justify-content: center !important; /* Logo no centro */
-        align-items: center !important;
-        width: 100% !important;
-        position: relative;
-        padding: 0 15px !important;
+    .nav-list.active {
+        display: flex; /* Mostra quando ativo */
     }
 
-    /* Ajusta o tamanho do logo para não esticar a barra */
-    .logo-img {
-        max-height: 50px !important; /* Limita a altura */
-        width: auto !important; /* Mantém a proporção */
-        object-fit: contain;
-    }
-
-    /* O botão do menu fica no canto sem empurrar o logo */
     .menu-toggle {
-        position: absolute !important;
-        right: 15px;
-        top: 50%;
-        transform: translateY(-50%); /* Centra verticalmente o ícone */
-        display: flex !important;
-        margin: 0 !important;
+        display: block;
         z-index: 1001;
+        cursor: pointer;
     }
 
-    /* Garante que as barras do menu não deformam */
-    .bar {
-        width: 25px !important;
-        height: 3px !important;
-        margin: 4px auto !important;
-    }
+    /* Animação do botão (Hambúrguer vira X) */
+    .menu-toggle.is-active .bar:nth-child(2) { opacity: 0; }
+    .menu-toggle.is-active .bar:nth-child(1) { transform: translateY(8px) rotate(45deg); }
+    .menu-toggle.is-active .bar:nth-child(3) { transform: translateY(-8px) rotate(-45deg); }
 }
 
 .bar {
