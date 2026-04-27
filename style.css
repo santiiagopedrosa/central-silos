@@ -418,23 +418,23 @@ footer p { color: var(--text-muted); margin-top: 20px; font-size: 0.9rem; }
     padding: 0 20px 100px;
 }
 
+/* Contentor onde as fotos e datas vão entrar */
 .photo-grid {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr); /* FORÇA 4 COLUNAS */
-    gap: 15px; /* Espaço entre as fotos */
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
 }
 
 .photo-card {
-    position: relative;
     width: 100%;
-    padding-top: 100%; /* Truque para manter as fotos perfeitamente quadradas */
+    background: none !important; /* Remove fundos cinzentos de teste */
+    margin: 0;
+    padding: 0;
     overflow: hidden;
     border-radius: 8px;
-    background: #1a1a1a;
-    opacity: 0;
-    transform: translateY(30px) scale(0.95);
-    transition: all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-    will-change: transform, opacity;
+    display: flex; /* Ajuda a eliminar espaços vazios na base */
 }
 
 .photo-card.reveal {
@@ -443,14 +443,11 @@ footer p { color: var(--text-muted); margin-top: 20px; font-size: 0.9rem; }
 }
 
 .photo-card img {
-    position: absolute;
-    top: 0;
-    left: 0;
     width: 100%;
     height: 100%;
-    object-fit: cover; /* Garante que a foto preenche o quadrado sem distorcer */
-    transition: transform 0.5s ease;
-    filter: brightness(0.9);
+    display: block;
+    object-fit: cover;
+    aspect-ratio: 1 / 1; /* Força um quadrado perfeito sem espaços extras */
 }
 
 /* Efeito ao passar o rato */
@@ -465,6 +462,42 @@ footer p { color: var(--text-muted); margin-top: 20px; font-size: 0.9rem; }
     cursor: pointer;
 }
 
+/* Títulos das Datas */
+.dia-header {
+    width: 100%;
+    color: var(--primary-yellow);
+    margin: 40px 0 15px 0;
+    font-size: 1.2rem;
+    text-transform: uppercase;
+    border-left: 4px solid var(--primary-yellow);
+    padding-left: 15px;
+    text-align: left;
+}
+
+/* Grelha de fotos (PC) - 5 colunas para fotos mais pequenas */
+.dia-wrapper {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr); 
+    gap: 12px; /* Um pouco mais de espaço entre elas fica melhor quando são pequenas */
+    width: 100%;
+    margin-bottom: 40px;
+}
+
+/* Ajuste para Tablets (4 colunas) */
+@media (max-width: 1024px) {
+    .dia-wrapper {
+        grid-template-columns: repeat(4, 1fr);
+    }
+}
+
+/* Ajuste para Telemóveis (3 colunas) */
+@media (max-width: 600px) {
+    .dia-wrapper {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 8px; /* Gap mais pequeno no telemóvel para aproveitar o ecrã */
+    }
+}
+
 .bar {
     width: 25px;
     height: 3px;
@@ -472,6 +505,87 @@ footer p { color: var(--text-muted); margin-top: 20px; font-size: 0.9rem; }
     margin: 5px 0;
     transition: 0.4s;
 }
+
+/* Contentor do grupo de data */
+.date-group {
+    margin-bottom: 25px;
+    text-align: left;
+    width: 100%;
+    max-width: 300px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.date-group label {
+    display: block;
+    color: var(--yellow);
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 8px;
+    font-weight: bold;
+}
+
+/* O campo de input propriamente dito */
+#data-evento {
+    background: #222; /* Um pouco mais claro que o fundo do card */
+    color: white;
+    border: 1px solid #444;
+    padding: 12px 15px;
+    border-radius: 8px;
+    width: 100%;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 1rem;
+    outline: none;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    cursor: pointer;
+}
+
+/* Quando clicamos ou focamos no campo */
+#data-evento:focus {
+    border-color: var(--yellow);
+    box-shadow: 0 0 10px rgba(244, 234, 140, 0.2);
+}
+
+/* Estilizar o ícone de calendário nativo (apenas browsers Chrome/Edge) */
+#data-evento::-webkit-calendar-picker-indicator {
+    filter: invert(1) sepia(100%) saturate(500%) hue-rotate(10deg); /* Torna o ícone amarelo */
+    cursor: pointer;
+    font-size: 1.2rem;
+}
+
+/* Ajuste para o botão de upload não ficar colado */
+.btn-yellow {
+    width: 100%;
+    max-width: 300px;
+    transition: transform 0.2s;
+}
+
+.btn-yellow:active {
+    transform: scale(0.98);
+}
+
+/* Personalizar o calendário Flatpickr para o estilo Silos */
+.flatpickr-calendar {
+    background: #161616 !important;
+    border: 1px solid #333 !important;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5) !important;
+}
+
+.flatpickr-day.selected, .flatpickr-day.selected:hover {
+    background: #f4ea8c !important; /* Amarelo Silos */
+    border-color: #f4ea8c !important;
+    color: black !important;
+}
+
+.flatpickr-current-month .flatpickr-monthDropdown-months {
+    background: #161616 !important;
+}
+
+.flatpickr-day { color: white !important; }
+.flatpickr-weekday { color: #888 !important; }
+.flatpickr-months .flatpickr-month { color: white !important; fill: white !important; }
+.flatpickr-prev-month svg, .flatpickr-next-month svg { fill: #f4ea8c !important; }
 
 /* RESPONSIVIDADE (Onde a desformatação costuma acontecer) */
 @media (max-width: 1100px) {

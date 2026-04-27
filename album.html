@@ -60,45 +60,89 @@
          
         
         async function carregarFotosDoStorage() {
-            const grid = document.getElementById('grid-principal');
-            const status = document.getElementById('status-carregamento');
-            
-            const { data, error } = await _supabase.storage
-                .from('fotos-album')
-                .list('', { // Lista a raiz do bucket
-                    limit: 30,
-                    sortBy: { column: 'created_at', order: 'desc' }
-                });
+    const grid = document.getElementById('grid-principal');
+    const status = document.getElementById('status-carregamento');
+    
+    const { data, error } = await _supabase.storage
+        .from('fotos-album')
+        .list('', { 
+            limit: 100, 
+            sortBy: { column: 'created_at', order: 'desc' } 
+        });
 
-            if (error) {
-                console.error("Erro Supabase:", error.message);
-                status.innerText = "Erro ao carregar fotos.";
-                return;
-            }
+    if (error) {
+        console.error("Erro:", error);
+        status.innerText = "Erro ao carregar.";
+        return;
+    }
 
-            if (data && data.length > 0) {
-                status.style.display = "none"; // Esconde o aviso de carregamento
+    if (!data || data.length === 0) {
+        status.innerText = "Ainda não há fotos no álbum.";
+        return;
+    }
 
-                data.forEach(foto => {
-                    // Ignora ficheiros de sistema do Supabase
-                    if (foto.name === ".emptyFolderPlaceholder") return;
+    grid.innerHTML = "";
+    status.style.display = "none";
 
-                    const { data: { publicUrl } } = _supabase.storage
-                        .from('fotos-album')
-                        .getPublicUrl(foto.name);
+    const fotosAgrupadas = {};
 
-                    // Cria o card da foto
-                    const div = document.createElement('div');
-                    div.className = 'photo-card scroll-reveal active';
-                    div.innerHTML = `<img src="${publicUrl}" alt="Silos Upload">`;
-                    
-                    // ADICIONA À GRELHA PRINCIPAL (Abaixo das fotos do Instagram)
-                    grid.appendChild(div);
-                });
-            } else {
-                status.innerText = "Ainda não há fotos carregadas no Storage.";
-            }
+    data.forEach(foto => {
+        if (foto.name === ".emptyFolderPlaceholder") return;
+
+        let dataChave;
+        
+        // Verifica se o nome tem o padrão DATA__NOME (ex: 2024-03-20__foto.jpg)
+        if (foto.name.includes('__')) {
+            dataChave = foto.name.split('__')[0];
+        } else {
+            // Para fotos antigas, usa a data de criação do ficheiro
+            dataChave = foto.created_at.split('T')[0]; 
         }
+
+        if (!fotosAgrupadas[dataChave]) fotosAgrupadas[dataChave] = [];
+        fotosAgrupadas[dataChave].push(foto);
+    });
+
+    // Ordenar as datas para que as mais recentes apareçam primeiro
+    const datasOrdenadas = Object.keys(fotosAgrupadas).sort().reverse();
+
+    // ... dentro da função carregarFotosDoStorage, após ordenar as datas:
+
+datasOrdenadas.forEach(dataTxt => {
+    const fotos = fotosAgrupadas[dataTxt];
+    
+    // 1. Criar o Título
+    let dataObj = new Date(dataTxt);
+    let dataExibicao = dataObj.toLocaleDateString('pt-PT', { 
+        weekday: 'long', day: 'numeric', month: 'long' 
+    });
+
+    const header = document.createElement('h2');
+    header.className = 'dia-header';
+    header.innerText = dataExibicao;
+    grid.appendChild(header);
+
+    // 2. Criar a Grelha do Dia
+    const diaWrapper = document.createElement('div');
+    diaWrapper.className = 'dia-wrapper';
+
+    fotos.forEach(foto => {
+        const { data: { publicUrl } } = _supabase.storage.from('fotos-album').getPublicUrl(foto.name);
+        
+        const card = document.createElement('div');
+        card.className = 'photo-card scroll-reveal active';
+        card.innerHTML = `<img src="${publicUrl}" loading="lazy">`;
+        
+        diaWrapper.appendChild(card);
+    });
+
+    grid.appendChild(diaWrapper);
+});
+
+    if (typeof aplicarEfeitoScroll === "function") {
+        setTimeout(aplicarEfeitoScroll, 200);
+    }
+}
 
         // Inicia a função
         carregarFotosDoStorage();

@@ -4,6 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Painel Admin | Central Silos</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/themes/dark.css">
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+<script src="https://npmcdn.com/flatpickr/dist/l10n/pt.js"></script>
      <link rel="shortcut icon" href="imagem_centralsilos-removebg-preview.png?v=2" type="image/x-icon">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/browser-image-compression@2.0.2/dist/browser-image-compression.js"></script>
@@ -135,6 +138,11 @@
         <h2 style="color: var(--yellow)">Upload de Fotos</h2>
         <label for="upload-input" class="btn-yellow">Escolher Fotos</label>
         <input type="file" id="upload-input" accept="image/*" multiple>
+        <div class="date-group">
+    <label for="data-evento">Data do Evento</label>
+    <input type="text" id="data-evento" placeholder="Selecionar data...">
+</div>
+<br>
         <div id="status-area" style="margin-top: 15px; font-size: 0.9rem; color: #888;"></div>
     </div>
 
@@ -218,7 +226,12 @@
             try {
                 status.innerHTML = `Otimizando ${file.name}...`;
                 const compressedFile = await imageCompression(file, options);
-                const fileName = `${Date.now()}-${file.name.replace(/\s/g, '_')}`;
+               // ... dentro do loop for(const file of files)
+const dataInput = document.getElementById('data-evento').value;
+if (!dataInput) { alert("Escolha uma data primeiro!"); return; }
+
+// Criamos o nome assim: DATA__NOME_DO_FICHEIRO
+const fileName = `${dataInput}__${Date.now()}-${file.name.replace(/\s/g, '_')}`;    
                 
                 status.innerHTML = `Enviando ${file.name}...`;
                 await _supabase.storage.from('fotos-album').upload(fileName, compressedFile);
@@ -251,6 +264,17 @@
         });
     }
 
+document.addEventListener('DOMContentLoaded', () => {
+    flatpickr("#data-evento", {
+        locale: "pt",
+        dateFormat: "Y-m-d",
+        defaultDate: "today",
+        disableMobile: "true", // Força o calendário bonito mesmo no telemóvel
+        onChange: function(selectedDates, dateStr) {
+            console.log("Data selecionada: ", dateStr);
+        }
+    });
+});
 </script>
 
 </body>
