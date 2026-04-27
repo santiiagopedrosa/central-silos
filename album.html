@@ -127,7 +127,19 @@
         photos.forEach(photo => observer.observe(photo));
     }
 
-    
+    document.addEventListener('DOMContentLoaded', function() {
+    const btn = document.getElementById('mobile-menu');
+    const menu = document.getElementById('nav-list');
+
+    if (btn && menu) {
+        btn.onclick = function(e) {
+            e.preventDefault();
+            btn.classList.toggle('is-active');
+            menu.classList.toggle('active');
+            console.log("Menu clicado"); // Para testares no PC (F12)
+        };
+    }
+});
 
     // --- IMPORTANTE ---
     // Se estás a carregar fotos do Supabase, tens de chamar esta função 
