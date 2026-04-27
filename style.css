@@ -516,9 +516,21 @@ footer p { color: var(--text-muted); margin-top: 20px; font-size: 0.9rem; }
     }
 }
 
+/* Ajuste específico para ecrãs muito pequenos (iPhone SE, etc) */
+@media (max-width: 350px) {
+    .admin-dia-wrapper {
+        grid-template-columns: repeat(2, 1fr) !important;
+    }
+}
+
 /* Ajuste para Telemóveis (3 colunas) */
 @media (max-width: 600px) {
     .dia-wrapper {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 8px; /* Gap mais pequeno no telemóvel para aproveitar o ecrã */
+    }
+
+    .admin-dia-wrapper {
         grid-template-columns: repeat(3, 1fr);
         gap: 8px; /* Gap mais pequeno no telemóvel para aproveitar o ecrã */
     }
