@@ -87,34 +87,17 @@ nav a:hover {
 }
 
 @media (max-width: 768px) {
-    .nav-container {
-        display: flex !important;
-        /* O segredo para separar os dois: */
-        justify-content: space-between !important; 
-        align-items: center !important;
-        
-        /* Garante que a barra ocupa a largura toda do ecrã */
-        width: 100% !important;
-        max-width: 100% !important;
-        
-        /* Dá um espaço nas laterais para não colarem no vidro do telemóvel */
-        padding: 0 20px !important;
-        
-        /* Remove qualquer centralização herdada */
-        margin: 0 !important;
+    nav {
+        padding: 15px 0; /* Ajusta a altura da barra no mobile */
+    }
+    
+    .logo-img {
+        margin-left: 15px; /* Garante que o logo não cola no canto */
     }
 
-    /* Força o Logo a não ter margens laterais automáticas */
-    .nav-container a {
-        margin: 0 !important;
-        display: flex !important;
-    }
-
-    /* Força o Botão do Menu a não ter margens laterais automáticas */
     .menu-toggle {
-        margin: 0 !important;
-        display: flex !important;
-        flex-direction: column !important;
+        margin-right: 15px; /* Garante que as barras não colam no canto */
+        display: flex; /* Garante que o botão aparece */
     }
 }
 
@@ -406,11 +389,13 @@ footer p { color: var(--text-muted); margin-top: 20px; font-size: 0.9rem; }
 }
 
 .nav-container {
+    max-width: 1200px;
+    margin: 0 auto;
     display: flex;
-    justify-content: space-between; /* Empurra o logo para a esquerda e o menu para a direita */
+    justify-content: space-between;
     align-items: center;
-    width: 100%;
-    padding: 0 20px; /* Dá um respiro nas bordas */
+    padding: 0 20px;
+    
 }
 
 .back-link {
