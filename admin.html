@@ -237,6 +237,18 @@
         }
     }
     checkUser();
+
+    const mobileMenu = document.getElementById('mobile-menu');
+    const navList = document.querySelector('.nav-list');
+
+    if (mobileMenu) {
+        mobileMenu.addEventListener('click', () => {
+            navList.classList.toggle('active');
+            // Opcional: Animação das barras (se tiveres o CSS para isso)
+            mobileMenu.classList.toggle('is-active');
+        });
+    }
+    
 </script>
 
 </body>

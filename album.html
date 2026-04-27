@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Álbum Central Silos | Caldas da Rainha</title>
     <link rel="stylesheet" href="style.css">
+         <link rel="shortcut icon" href="imagem_centralsilos-removebg-preview.png" type="image/x-icon">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
@@ -125,6 +126,17 @@
         // Seleciona todas as fotos (estáticas e dinâmicas)
         const photos = document.querySelectorAll('.photo-card');
         photos.forEach(photo => observer.observe(photo));
+    }
+
+    const mobileMenu = document.getElementById('mobile-menu');
+    const navList = document.querySelector('.nav-list');
+
+    if (mobileMenu) {
+        mobileMenu.addEventListener('click', () => {
+            navList.classList.toggle('active');
+            // Opcional: Animação das barras (se tiveres o CSS para isso)
+            mobileMenu.classList.toggle('is-active');
+        });
     }
 
     // --- IMPORTANTE ---
