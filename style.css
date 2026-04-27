@@ -86,31 +86,7 @@ nav a:hover {
     letter-spacing: 1px;
 }
 
-@media (max-width: 768px) {
-    .nav-container {
-        display: flex !important;
-        /* Volta a centrar o conteúdo horizontalmente */
-        justify-content: center !important; 
-        align-items: center !important;
-        position: relative;
-        width: 100% !important;
-        padding: 0 15px !important;
-    }
 
-    /* O Logo fica no centro */
-    .nav-container a {
-        margin: 0 auto !important;
-        display: block !important;
-    }
-
-    /* O Botão do Menu fica "flutuante" à direita ou no centro conforme o teu código anterior */
-    .menu-toggle {
-        position: absolute; /* Isto permite que o logo fique no centro real */
-        right: 20px; /* Mantém o botão num canto para não chocar com o logo */
-        display: flex;
-        flex-direction: column;
-    }
-}
 
 /* Hero Section */
 .hero {
@@ -662,35 +638,47 @@ footer p { color: var(--text-muted); margin-top: 20px; font-size: 0.9rem; }
 }
 /* MENU MOBILE */
 @media (max-width: 768px) {
-    .nav-list {
-        display: none; /* Esconde por padrão */
-        flex-direction: column;
-        position: fixed;
-        top: 0;
-        right: 0;
-        width: 100%;
-        height: 100vh;
-        background: rgba(10, 10, 10, 0.98);
-        justify-content: center;
+    /* Garante que a barra tem uma altura fixa para não deformar */
+    nav {
+        height: 70px !important;
+        display: flex;
         align-items: center;
-        z-index: 999;
-        gap: 40px;
     }
 
-    .nav-list.active {
-        display: flex; /* Mostra quando ativo */
+    .nav-container {
+        display: flex !important;
+        flex-direction: row !important; /* Força linha, nunca coluna */
+        justify-content: center !important; /* Logo no centro */
+        align-items: center !important;
+        width: 100% !important;
+        position: relative;
+        padding: 0 15px !important;
     }
 
+    /* Ajusta o tamanho do logo para não esticar a barra */
+    .logo-img {
+        max-height: 50px !important; /* Limita a altura */
+        width: auto !important; /* Mantém a proporção */
+        object-fit: contain;
+    }
+
+    /* O botão do menu fica no canto sem empurrar o logo */
     .menu-toggle {
-        display: block;
+        position: absolute !important;
+        right: 15px;
+        top: 50%;
+        transform: translateY(-50%); /* Centra verticalmente o ícone */
+        display: flex !important;
+        margin: 0 !important;
         z-index: 1001;
-        cursor: pointer;
     }
 
-    /* Animação do botão (Hambúrguer vira X) */
-    .menu-toggle.is-active .bar:nth-child(2) { opacity: 0; }
-    .menu-toggle.is-active .bar:nth-child(1) { transform: translateY(8px) rotate(45deg); }
-    .menu-toggle.is-active .bar:nth-child(3) { transform: translateY(-8px) rotate(-45deg); }
+    /* Garante que as barras do menu não deformam */
+    .bar {
+        width: 25px !important;
+        height: 3px !important;
+        margin: 4px auto !important;
+    }
 }
 
 .bar {
