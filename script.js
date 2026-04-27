@@ -88,15 +88,37 @@ updateBarStatus();
 setInterval(updateBarStatus, 30000);
 
 
-const mobileMenu = document.getElementById('mobile-menu');
-const navList = document.querySelector('.nav-list');
+document.addEventListener('DOMContentLoaded', () => {
+    const mobileMenu = document.getElementById('mobile-menu');
+    const navList = document.querySelector('.nav-list');
+    const navbar = document.getElementById('navbar');
 
-if (mobileMenu) {
-    mobileMenu.addEventListener('click', () => {
-        mobileMenu.classList.toggle('is-active');
-        navList.classList.toggle('active');
+    // 1. Abrir/Fechar Menu
+    if (mobileMenu && navList) {
+        mobileMenu.onclick = () => {
+            mobileMenu.classList.toggle('is-active');
+            navList.classList.toggle('active');
+        };
+    }
+
+    // 2. Fechar menu ao clicar num link
+    document.querySelectorAll('.nav-list a').forEach(link => {
+        link.onclick = () => {
+            mobileMenu.classList.remove('is-active');
+            navList.classList.remove('active');
+        };
     });
-}
+
+    // 3. Efeito de Scroll na Navbar
+    window.onscroll = () => {
+        if (window.scrollY > 50) {
+            navbar.classList.add('scrolled');
+        } else {
+            navbar.classList.remove('scrolled');
+        }
+    };
+});
+
 
 // Fecha o menu ao clicar num link (para não ficar aberto ao mudar de página)
 document.querySelectorAll('.nav-list a').forEach(n => n.addEventListener('click', () => {

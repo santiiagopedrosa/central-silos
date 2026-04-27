@@ -94,37 +94,39 @@
 </head>
 <body>
 
-  <nav id="navbar">
+  <<nav id="navbar">
     <div class="nav-container">
-
         <a href="index.html">
-            <img src="imagem_centralsilos.jpg" alt="Logo Central Silos" class="logo-img" onerror="this.src='https://via.placeholder.com/50x50/f4ea8c/000000?text=CS'">
+            <img src="imagem_centralsilos.jpg" alt="Logo" class="logo-img">
         </a>
         
         <ul class="nav-list">
             <li><a href="index.html">Home</a></li>
             <li><a href="album.html">Momentos</a></li>
+            <li><a href="admin.html">Admin</a></li>
             <li><a href="#" onclick="logout()">Sair</a></li>
         </ul>
-
-        
 
         <div class="menu-toggle" id="mobile-menu">
             <span class="bar"></span>
             <span class="bar"></span>
             <span class="bar"></span>
         </div>
-
     </div>
 </nav>
 
 
 <div id="lock-screen">
     <div class="lock-box">
-        <h2 style="color: var(--yellow)">ADMIN SILOS</h2>
+        <h2 style="color: var(--yellow)">ADMIN SILOS</h2>        
         <input type="password" id="admin-pass" placeholder="Palavra-passe" style="padding: 10px; width: 80%; margin: 15px 0; border-radius: 5px; border: none;">
         <br>
         <button onclick="verificarPass()" class="btn-yellow">ENTRAR</button>
+        <div style="margin-top: 20px;">
+            <a href="index.html" style="color: #888; text-decoration: none; font-size: 0.8rem; letter-spacing: 1px;">
+                ← VOLTAR AO SITE
+            </a>
+        </div>
     </div>
 </div>
 
@@ -248,7 +250,7 @@
             mobileMenu.classList.toggle('is-active');
         });
     }
-    
+
 </script>
 
 </body>

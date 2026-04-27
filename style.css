@@ -6,6 +6,7 @@
     --text-muted: #a0a0a0;
 }
 
+
 * {
     margin: 0;
     padding: 0;
@@ -458,6 +459,20 @@ footer p { color: var(--text-muted); margin-top: 20px; font-size: 0.9rem; }
     filter: brightness(1.1);
 }
 
+.menu-toggle {
+    display: none; /* Esconde no PC */
+    flex-direction: column;
+    cursor: pointer;
+}
+
+.bar {
+    width: 25px;
+    height: 3px;
+    background-color: var(--primary-yellow);
+    margin: 5px 0;
+    transition: 0.4s;
+}
+
 /* RESPONSIVIDADE (Onde a desformatação costuma acontecer) */
 @media (max-width: 1100px) {
     .photo-grid {
@@ -466,40 +481,45 @@ footer p { color: var(--text-muted); margin-top: 20px; font-size: 0.9rem; }
 }
 /* MENU MOBILE */
 @media (max-width: 768px) {
-    .menu-toggle {
-        display: flex !important;
-        flex-direction: column;
-        gap: 5px;
-        cursor: pointer;
-    }
-
-    .bar {
-        width: 25px;
-        height: 3px;
-        background-color: #f4ea8c;
-    }
-
-    /* Esconde a lista e coloca-a em ecrã total */
     .nav-list {
-        display: none; /* ESCONDIDO POR PADRÃO */
-        position: fixed;
-        top: 80px;
-        left: 0;
-        width: 100%;
-        height: calc(100vh - 80px);
-        background-color: #0a0a0a;
+        display: none; /* Esconde por padrão */
         flex-direction: column;
+        position: fixed;
+        top: 0;
+        right: 0;
+        width: 100%;
+        height: 100vh;
+        background: rgba(10, 10, 10, 0.98);
+        justify-content: center;
         align-items: center;
-        padding-top: 50px;
+        z-index: 999;
         gap: 40px;
     }
 
-    /* CLASSE QUE O JS VAI ATIVAR */
     .nav-list.active {
-        display: flex !important;
+        display: flex; /* Mostra quando ativo */
     }
+
+    .menu-toggle {
+        display: block;
+        z-index: 1001;
+        cursor: pointer;
+    }
+
+    /* Animação do botão (Hambúrguer vira X) */
+    .menu-toggle.is-active .bar:nth-child(2) { opacity: 0; }
+    .menu-toggle.is-active .bar:nth-child(1) { transform: translateY(8px) rotate(45deg); }
+    .menu-toggle.is-active .bar:nth-child(3) { transform: translateY(-8px) rotate(-45deg); }
 }
 
+.bar {
+    display: block;
+    width: 25px;
+    height: 3px;
+    margin: 5px auto;
+    background-color: var(--primary-yellow);
+    transition: all 0.3s ease;
+}
 @media (max-width: 480px) {
     .photo-grid {
         grid-template-columns: 1fr; /* 1 coluna em telemóveis pequenos */

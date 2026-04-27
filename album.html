@@ -13,24 +13,21 @@
 
     <nav id="navbar">
     <div class="nav-container">
-
         <a href="index.html">
-            <img src="imagem_centralsilos.jpg" alt="Logo Central Silos" class="logo-img" onerror="this.src='https://via.placeholder.com/50x50/f4ea8c/000000?text=CS'">
+            <img src="imagem_centralsilos.jpg" alt="Logo" class="logo-img">
         </a>
         
         <ul class="nav-list">
             <li><a href="index.html">Home</a></li>
-          <li><a href="admin.html">ADMIN</a></li>
+            <li><a href="album.html">Momentos</a></li>
+            <li><a href="admin.html">Admin</a></li>
         </ul>
-
-        
 
         <div class="menu-toggle" id="mobile-menu">
             <span class="bar"></span>
             <span class="bar"></span>
             <span class="bar"></span>
         </div>
-
     </div>
 </nav>
 
@@ -60,6 +57,8 @@
         const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5kaGRydXB3bmRxdXFka2Fmc2N4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY5NTE0MjIsImV4cCI6MjA5MjUyNzQyMn0.r6nfXXCiRaHAJgjb70Jmq_yzVTBpf417H0ygvoD3EbM';
         const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
+         
+        
         async function carregarFotosDoStorage() {
             const grid = document.getElementById('grid-principal');
             const status = document.getElementById('status-carregamento');
@@ -128,16 +127,7 @@
         photos.forEach(photo => observer.observe(photo));
     }
 
-    const mobileMenu = document.getElementById('mobile-menu');
-    const navList = document.querySelector('.nav-list');
-
-    if (mobileMenu) {
-        mobileMenu.addEventListener('click', () => {
-            navList.classList.toggle('active');
-            // Opcional: Animação das barras (se tiveres o CSS para isso)
-            mobileMenu.classList.toggle('is-active');
-        });
-    }
+    
 
     // --- IMPORTANTE ---
     // Se estás a carregar fotos do Supabase, tens de chamar esta função 
