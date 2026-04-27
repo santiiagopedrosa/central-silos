@@ -86,21 +86,6 @@ nav a:hover {
     letter-spacing: 1px;
 }
 
-@media (max-width: 768px) {
-    nav {
-        padding: 15px 0; /* Ajusta a altura da barra no mobile */
-    }
-    
-    .logo-img {
-        margin-left: 15px; /* Garante que o logo não cola no canto */
-    }
-
-    .menu-toggle {
-        margin-right: 15px; /* Garante que as barras não colam no canto */
-        display: flex; /* Garante que o botão aparece */
-    }
-}
-
 /* Hero Section */
 .hero {
     height: 100vh;
@@ -522,8 +507,9 @@ footer p { color: var(--text-muted); margin-top: 20px; font-size: 0.9rem; }
 }
 
 #admin-gallery {
-    display: block !important;
-    overflow: visible !important;
+    display: block; /* Importante para as secções ficarem uma por baixo da outra */
+    width: 100%;
+    text-align: left;
 }
 
 /* Ajuste para Tablets (4 colunas) */
