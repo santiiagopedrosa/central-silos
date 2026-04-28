@@ -864,3 +864,44 @@ footer p { color: var(--text-muted); margin-top: 20px; font-size: 0.9rem; }
     from {transform: scale(0.7); opacity: 0;}
     to {transform: scale(1); opacity: 1;}
 }
+
+
+/* Container para alinhar foto e botão no modal */
+.modal-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+    max-width: 90%;
+}
+
+.btn-download-grande {
+    background-color: #f4ea8c; /* Amarelo Silos */
+    color: black;
+    padding: 12px 25px;
+    border-radius: 50px;
+    text-decoration: none;
+    font-weight: 700;
+    font-size: 0.9rem;
+    letter-spacing: 1px;
+    transition: transform 0.2s, background-color 0.2s;
+    text-transform: uppercase;
+}
+
+.btn-download-grande:hover {
+    transform: scale(1.05);
+    background-color: white;
+}
+
+/* Ajuste do Modal para garantir que o scroll funcione se a foto for muito alta */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 20000;
+    left: 0; top: 0;
+    width: 100%; height: 100%;
+    background: rgba(0, 0, 0, 0.9);
+    align-items: center;
+    justify-content: center;
+    overflow-y: auto; /* Permite scroll se o botão ficar fora do ecrã */
+}

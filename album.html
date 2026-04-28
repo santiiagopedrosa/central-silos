@@ -54,7 +54,12 @@
 
     <div id="foto-modal" class="modal" onclick="fecharModal()">
         <span class="fechar-modal">&times;</span>
-        <img class="modal-conteudo" id="img-full">
+        <div class="modal-wrapper" onclick="event.stopPropagation()">
+            <img class="modal-conteudo" id="img-full">
+            <button id="btn-download-modal" class="btn-download-grande" style="margin-top: 20px; cursor: pointer;">
+                BAIXAR FOTO
+            </button>
+        </div>
     </div>
 
     <footer class="album-footer">
@@ -68,7 +73,6 @@
         const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5kaGRydXB3bmRxdXFka2Fmc2N4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY5NTE0MjIsImV4cCI6MjA5MjUyNzQyMn0.r6nfXXCiRaHAJgjb70Jmq_yzVTBpf417H0ygvoD3EbM';
         const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-        // VARIÁVEIS DE CONTROLO DE PAGINAÇÃO
         let offsetGlobal = 0;
         const limitePorCarga = 100;
 
@@ -139,34 +143,33 @@
                     const { data: { publicUrl } } = _supabase.storage.from('fotos-album').getPublicUrl(foto.name);
                     const card = document.createElement('div');
                     card.className = 'photo-card scroll-reveal active';
-                    card.innerHTML = `<img src="${publicUrl}" loading="lazy" onclick="abrirModal('${publicUrl}')" style="cursor: pointer;">`;
+                    card.innerHTML = `<img src="${publicUrl}" loading="lazy" onclick="abrirModal('${publicUrl}', '${foto.name}')" style="cursor: pointer;">`;
                     diaWrapper.appendChild(card);
                 });
             });
 
-            if (data.length === limitePorCarga) {
-                btnContainer.style.display = "block";
-            } else {
-                btnContainer.style.display = "none";
-            }
-
-            if (typeof aplicarEfeitoScroll === "function") {
-                setTimeout(aplicarEfeitoScroll, 200);
-            }
+            btnContainer.style.display = data.length === limitePorCarga ? "block" : "none";
         }
 
-        // FUNÇÃO PARA O BOTÃO CARREGAR MAIS
         window.carregarMaisFotos = function () {
             offsetGlobal += limitePorCarga;
             carregarFotosDoStorage(false);
         };
 
-        // FUNÇÕES DO MODAL (LIGHTBOX)
-        window.abrirModal = function (url) {
+        // FUNÇÃO PARA ABRIR MODAL E CONFIGURAR O DOWNLOAD
+        window.abrirModal = function (url, filename) {
             const modal = document.getElementById('foto-modal');
             const imgFull = document.getElementById('img-full');
+            const btnDownload = document.getElementById('btn-download-modal');
+
             modal.style.display = "flex";
             imgFull.src = url;
+            
+            // Força o download ao clicar no botão
+            btnDownload.onclick = function() {
+                forcarDownload(url, filename || "silos-foto.jpg");
+            };
+            
             document.body.style.overflow = "hidden";
         }
 
@@ -176,9 +179,34 @@
             document.body.style.overflow = "auto";
         }
 
-        // Inicia a primeira carga
+        // FUNÇÃO QUE REALMENTE FAZ O DOWNLOAD (BLOB)
+        async function forcarDownload(url, filename) {
+            const btn = document.getElementById('btn-download-modal');
+            const textoOriginal = btn.innerText;
+            
+            try {
+                btn.innerText = "A BAIXAR...";
+                const resposta = await fetch(url);
+                const blob = await resposta.blob();
+                const urlBlob = window.URL.createObjectURL(blob);
+                
+                const link = document.createElement('a');
+                link.href = urlBlob;
+                link.download = filename;
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                
+                window.URL.revokeObjectURL(urlBlob);
+                btn.innerText = textoOriginal;
+            } catch (erro) {
+                console.error("Erro:", erro);
+                btn.innerText = "ERRO!";
+                window.open(url, '_blank'); // Abre em nova aba se falhar
+            }
+        }
+
         carregarFotosDoStorage();
     </script>
 </body>
-
 </html>
