@@ -1,94 +1,98 @@
 <!DOCTYPE html>
 <html lang="pt-PT">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Central Silos | Caldas da Rainha</title>
     <link rel="stylesheet" href="style.css">
-<link rel="icon" type="image/png" href="./imagem_centralsilos-removebg-preview.png?v=2">
+    <link rel="icon" type="image/png" href="./imagem_centralsilos-removebg-preview.png?v=2">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;500;700&display=swap" rel="stylesheet">
+    
     <style>
         /* Estilos específicos para o Rodapé que Gira */
-       #reviews {
-    background: #0f0f0f;
-    padding: 80px 20px;
-    text-align: center;
-}
+        #reviews {
+            background: #0f0f0f;
+            padding: 80px 20px;
+            text-align: center;
+        }
 
-.reviews-wrapper {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    max-width: 1200px;
-    margin: 0 auto;
-    position: relative;
-}
+        .reviews-wrapper {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            max-width: 1200px;
+            margin: 0 auto;
+            position: relative;
+        }
 
-.reviews-slider-container {
-    overflow: hidden; /* Esconde as reviews que não cabem */
-    width: 90%;
-}
+        .reviews-slider-container {
+            overflow: hidden; /* Esconde as reviews que não cabem */
+            width: 90%;
+        }
 
-.reviews-track {
-    display: flex;
-    transition: transform 0.5s ease-in-out;
-    gap: 20px; /* Espaço entre os cards */
-}
+        .reviews-track {
+            display: flex;
+            transition: transform 0.5s ease-in-out;
+            gap: 20px; /* Espaço entre os cards */
+        }
 
-.review-box {
-    flex: 0 0 calc(33.333% - 20px); /* Garante que aparecem 3 por vez */
-    background: #161616;
-    padding: 30px;
-    border-radius: 15px;
-    border: 1px solid #333;
-    box-sizing: border-box;
-    min-height: 250px;
-}
+        .review-box {
+            flex: 0 0 calc(33.333% - 20px); /* Garante que aparecem 3 por vez */
+            background: #161616;
+            padding: 30px;
+            border-radius: 15px;
+            border: 1px solid #333;
+            box-sizing: border-box;
+            min-height: 250px;
+        }
 
-/* Setas de Navegação */
-.nav-btn {
-    background: none;
-    border: none;
-    color: var(--yellow, #f4ea8c);
-    font-size: 2.5rem;
-    cursor: pointer;
-    padding: 10px;
-    z-index: 10;
-    transition: transform 0.2s;
-}
+        /* Setas de Navegação */
+        .nav-btn {
+            background: none;
+            border: none;
+            color: var(--yellow, #f4ea8c);
+            font-size: 2.5rem;
+            cursor: pointer;
+            padding: 10px;
+            z-index: 10;
+            transition: transform 0.2s;
+        }
 
-.nav-btn:hover { transform: scale(1.2); }
+        .nav-btn:hover {
+            transform: scale(1.2);
+        }
 
-/* Responsividade: No telemóvel mostra apenas 1 */
-@media (max-width: 900px) {
-    .review-box {
-        flex: 0 0 100%;
-    }
-}
-
+        /* Responsividade: No telemóvel mostra apenas 1 */
+        @media (max-width: 900px) {
+            .review-box {
+                flex: 0 0 100%;
+            }
+        }
     </style>
 </head>
+
 <body>
 
     <nav id="navbar">
-    <div class="nav-container">
-        <a href="index.html">
-            <img src="imagem_centralsilos.jpg" alt="Logo" class="logo-img">
-        </a>
-        
-        <ul class="nav-list">
-            <li><a href="index.html">Home</a></li>
-            <li><a href="album.html">Momentos</a></li>
-            <li><a href="admin.html">Admin</a></li>
-        </ul>
+        <div class="nav-container">
+            <a href="index.html">
+                <img src="imagem_centralsilos.jpg" alt="Logo" class="logo-img">
+            </a>
 
-        <div class="menu-toggle" id="mobile-menu">
-            <span class="bar"></span>
-            <span class="bar"></span>
-            <span class="bar"></span>
+            <ul class="nav-list">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="album.html">Momentos</a></li>
+                <li><a href="admin.html">Admin</a></li>
+            </ul>
+
+            <div class="menu-toggle" id="mobile-menu">
+                <span class="bar"></span>
+                <span class="bar"></span>
+                <span class="bar"></span>
+            </div>
         </div>
-    </div>
-</nav>
+    </nav>
 
     <header class="hero">
         <div class="hero-content fade-in-up">
@@ -117,61 +121,61 @@
     </section>
 
     <section id="reviews">
-    <h2 class="section-title scroll-reveal">O Que <span>Dizem</span> de Nós</h2>
-    
-    <div class="reviews-wrapper">
-        <button class="nav-btn prev" id="prevBtn">❮</button>
-        
-        <div class="reviews-slider-container">
-            <div class="reviews-track" id="reviews-track">
-                <div class="review-box">
-    <div class="stars">★★★★★</div>
-    <p class="review-text">"Um café único numa antiga fábrica. A decoração é excelente e muito original. Preços acessíveis e staff incrível!"</p>
-    <p class="reviewer">- Joana Peixes</p>
-</div>
+        <h2 class="section-title scroll-reveal">O Que <span>Dizem</span> de Nós</h2>
 
-<div class="review-box">
-    <div class="stars">★★★★★</div>
-    <p class="review-text">"Boas tostas mistas, bem servidas com acompanhamento de batata. Os preços são muito bons e é um ótimo lugar para conviver."</p>
-    <p class="reviewer">- Fulanderson</p>
-</div>
+        <div class="reviews-wrapper">
+            <button class="nav-btn prev" id="prevBtn">❮</button>
 
-<div class="review-box">
-    <div class="stars">★★★★★</div>
-    <p class="review-text">"Cute bar, very hip with a lot of alternative folk. Ambient is nice and chill. You may smoke in the terrace area."</p>
-    <p class="reviewer">- Carina Canelas</p>
-</div>
+            <div class="reviews-slider-container">
+                <div class="reviews-track" id="reviews-track">
+                    <div class="review-box">
+                        <div class="stars">★★★★★</div>
+                        <p class="review-text">"Um café único numa antiga fábrica. A decoração é excelente e muito original. Preços acessíveis e staff incrível!"</p>
+                        <p class="reviewer">- Joana Peixes</p>
+                    </div>
 
-<div class="review-box">
-    <div class="stars">★★★★★</div>
-    <p class="review-text">"Espaço super original dentro de uma antiga moagem. A esplanada é enorme e muito agradável. Vibe imbatível nas Caldas!"</p>
-    <p class="reviewer">- Tiago Mesquita</p>
-</div>
+                    <div class="review-box">
+                        <div class="stars">★★★★★</div>
+                        <p class="review-text">"Boas tostas mistas, bem servidas com acompanhamento de batata. Os preços são muito bons e é um ótimo lugar para conviver."</p>
+                        <p class="reviewer">- Fulanderson</p>
+                    </div>
 
-<div class="review-box">
-    <div class="stars">★★★★★</div>
-    <p class="review-text">"A vibe alternativa que faltava. Adoro as noites de DJ, o som é sempre eclético e a esplanada coberta é top para os dias de chuva."</p>
-    <p class="reviewer">- Beatriz Fonseca</p>
-</div>
+                    <div class="review-box">
+                        <div class="stars">★★★★★</div>
+                        <p class="review-text">"Cute bar, very hip with a lot of alternative folk. Ambient is nice and chill. You may smoke in the terrace area."</p>
+                        <p class="reviewer">- Carina Canelas</p>
+                    </div>
 
-<div class="review-box">
-    <div class="stars">★★★★★</div>
-    <p class="review-text">"A great night bar... The choice is impressive and the shots are top tier. An imperial, a ginja, a Beirão with crisps."</p>
-    <p class="reviewer">- Patrick Favre</p>
-</div>
+                    <div class="review-box">
+                        <div class="stars">★★★★★</div>
+                        <p class="review-text">"Espaço super original dentro de uma antiga moagem. A esplanada é enorme e muito agradável. Vibe imbatível nas Caldas!"</p>
+                        <p class="reviewer">- Tiago Mesquita</p>
+                    </div>
+
+                    <div class="review-box">
+                        <div class="stars">★★★★★</div>
+                        <p class="review-text">"A vibe alternativa que faltava. Adoro as noites de DJ, o som é sempre eclético e a esplanada coberta é top para os dias de chuva."</p>
+                        <p class="reviewer">- Beatriz Fonseca</p>
+                    </div>
+
+                    <div class="review-box">
+                        <div class="stars">★★★★★</div>
+                        <p class="review-text">"A great night bar... The choice is impressive and the shots are top tier. An imperial, a ginja, a Beirão with crisps."</p>
+                        <p class="reviewer">- Patrick Favre</p>
+                    </div>
                 </div>
-        </div>
+            </div>
 
-        <button class="nav-btn next" id="nextBtn">❯</button>
-    </div>
-</section>
+            <button class="nav-btn next" id="nextBtn">❯</button>
+        </div>
+    </section>
 
     <footer id="contactos" class="scroll-reveal">
         <div class="horarios-footer">
             <p>Seg a Qui: 17h — 02h | Sex e Sáb: 14h — 03h | Dom: 14h — 02h</p>
         </div>
         <div class="status-container">
-            <span id="status-dot">●</span> 
+            <span id="status-dot">●</span>
             <span id="status-text">A verificar...</span>
         </div>
         <div class="social-links">
@@ -186,42 +190,43 @@
     <script src="script.js"></script>
 
     <script>
-    const track = document.getElementById('reviews-track');
-    const nextBtn = document.getElementById('nextBtn');
-    const prevBtn = document.getElementById('prevBtn');
-    
-    let index = 0;
+        const track = document.getElementById('reviews-track');
+        const nextBtn = document.getElementById('nextBtn');
+        const prevBtn = document.getElementById('prevBtn');
 
-    function updateSlider() {
-        const itemWidth = document.querySelector('.review-box').offsetWidth + 20; // Largura + Gap
-        track.style.transform = `translateX(${-index * itemWidth}px)`;
-    }
+        let index = 0;
 
-    nextBtn.addEventListener('click', () => {
-        const totalItems = document.querySelectorAll('.review-box').length;
-        const visibleItems = window.innerWidth > 900 ? 3 : 1;
-        
-        if (index < totalItems - visibleItems) {
-            index++;
-        } else {
-            index = 0; // Volta ao início
+        function updateSlider() {
+            const itemWidth = document.querySelector('.review-box').offsetWidth + 20; // Largura + Gap
+            track.style.transform = `translateX(${-index * itemWidth}px)`;
         }
-        updateSlider();
-    });
 
-    prevBtn.addEventListener('click', () => {
-        if (index > 0) {
-            index--;
-        } else {
+        nextBtn.addEventListener('click', () => {
             const totalItems = document.querySelectorAll('.review-box').length;
             const visibleItems = window.innerWidth > 900 ? 3 : 1;
-            index = totalItems - visibleItems; // Vai para o fim
-        }
-        updateSlider();
-    });
 
-    // Ajusta se a janela mudar de tamanho
-    window.addEventListener('resize', updateSlider);
-</script>
+            if (index < totalItems - visibleItems) {
+                index++;
+            } else {
+                index = 0; // Volta ao início
+            }
+            updateSlider();
+        });
+
+        prevBtn.addEventListener('click', () => {
+            if (index > 0) {
+                index--;
+            } else {
+                const totalItems = document.querySelectorAll('.review-box').length;
+                const visibleItems = window.innerWidth > 900 ? 3 : 1;
+                index = totalItems - visibleItems; // Vai para o fim
+            }
+            updateSlider();
+        });
+
+        // Ajusta se a janela mudar de tamanho
+        window.addEventListener('resize', updateSlider);
+    </script>
 </body>
+
 </html>

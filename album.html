@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="pt-PT">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,27 +10,28 @@
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
+
 <body class="album-body">
 
-   <nav id="navbar">
-    <div class="nav-container">
-        <a href="index.html">
-            <img src="imagem_centralsilos.jpg" alt="Logo" class="logo-img">
-        </a>
-        
-        <ul class="nav-list" id="nav-list">
-            <li><a href="index.html">Home</a></li>
-            <li><a href="album.html">Momentos</a></li>
-            <li><a href="admin.html">ADMIN</a></li>
-        </ul>
+    <nav id="navbar">
+        <div class="nav-container">
+            <a href="index.html">
+                <img src="imagem_centralsilos.jpg" alt="Logo" class="logo-img">
+            </a>
 
-        <div class="menu-toggle" id="mobile-menu">
-            <span class="bar"></span>
-            <span class="bar"></span>
-            <span class="bar"></span>
+            <ul class="nav-list" id="nav-list">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="album.html">Momentos</a></li>
+                <li><a href="admin.html">ADMIN</a></li>
+            </ul>
+
+            <div class="menu-toggle" id="mobile-menu">
+                <span class="bar"></span>
+                <span class="bar"></span>
+                <span class="bar"></span>
+            </div>
         </div>
-    </div>
-</nav>
+    </nav>
 
     <header class="album-intro">
         <h1 class="scroll-reveal">GALERIA <span>SILOS</span></h1>
@@ -37,18 +39,23 @@
     </header>
 
     <section class="album-wrapper">
-    <div id="grid-principal" class="photo-grid"></div>
+        <div id="grid-principal" class="photo-grid"></div>
 
-    <div id="status-carregamento" style="text-align:center; color:#666; margin-top:20px;">
-        A procurar novas fotos...
-    </div>
+        <div id="status-carregamento" style="text-align:center; color:#666; margin-top:20px;">
+            A procurar novas fotos...
+        </div>
 
-    <div id="container-carregar-mais" style="text-align:center; margin: 40px 0; display: none;">
-        <button id="btn-carregar-mais" onclick="carregarMaisFotos()" class="btn-mais">
-            MOSTRAR MAIS MOMENTOS
-        </button>
+        <div id="container-carregar-mais" style="text-align:center; margin: 40px 0; display: none;">
+            <button id="btn-carregar-mais" onclick="carregarMaisFotos()" class="btn-mais">
+                MOSTRAR MAIS MOMENTOS
+            </button>
+        </div>
+    </section>
+
+    <div id="foto-modal" class="modal" onclick="fecharModal()">
+        <span class="fechar-modal">&times;</span>
+        <img class="modal-conteudo" id="img-full">
     </div>
-</section>
 
     <footer class="album-footer">
         <p>BAR CENTRAL SILOS • 2026</p>
@@ -57,134 +64,121 @@
     <script src="script.js"></script>
 
     <script>
-       const SUPABASE_URL = 'https://ndhdrupwndquqdkafscx.supabase.co'; 
-const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5kaGRydXB3bmRxdXFka2Fmc2N4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY5NTE0MjIsImV4cCI6MjA5MjUyNzQyMn0.r6nfXXCiRaHAJgjb70Jmq_yzVTBpf417H0ygvoD3EbM';
-const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+        const SUPABASE_URL = 'https://ndhdrupwndquqdkafscx.supabase.co';
+        const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5kaGRydXB3bmRxdXFka2Fmc2N4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY5NTE0MjIsImV4cCI6MjA5MjUyNzQyMn0.r6nfXXCiRaHAJgjb70Jmq_yzVTBpf417H0ygvoD3EbM';
+        const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-// VARIÁVEIS DE CONTROLO DE PAGINAÇÃO
-let offsetGlobal = 0;
-const limitePorCarga = 100;
+        // VARIÁVEIS DE CONTROLO DE PAGINAÇÃO
+        let offsetGlobal = 0;
+        const limitePorCarga = 100;
 
-async function carregarFotosDoStorage(reset = true) {
-    const grid = document.getElementById('grid-principal');
-    const status = document.getElementById('status-carregamento');
-    const btnContainer = document.getElementById('container-carregar-mais');
-    
-    if (reset) {
-        grid.innerHTML = "";
-        offsetGlobal = 0;
-        status.style.display = "block";
-        status.innerText = "A carregar momentos...";
-    }
+        async function carregarFotosDoStorage(reset = true) {
+            const grid = document.getElementById('grid-principal');
+            const status = document.getElementById('status-carregamento');
+            const btnContainer = document.getElementById('container-carregar-mais');
 
-    // Pedir ao Supabase as próximas 100 fotos
-    const { data, error } = await _supabase.storage
-        .from('fotos-album')
-        .list('', { 
-            limit: limitePorCarga, 
-            offset: offsetGlobal,
-            sortBy: { column: 'name', order: 'desc' } // Nome desc garante data__ mais recente
-        });
+            if (reset) {
+                grid.innerHTML = "";
+                offsetGlobal = 0;
+                status.style.display = "block";
+                status.innerText = "A carregar momentos...";
+            }
 
-    if (error) {
-        status.innerText = "Erro ao carregar.";
-        return;
-    }
+            const { data, error } = await _supabase.storage
+                .from('fotos-album')
+                .list('', {
+                    limit: limitePorCarga,
+                    offset: offsetGlobal,
+                    sortBy: { column: 'name', order: 'desc' }
+                });
 
-    status.style.display = "none";
+            if (error) {
+                status.innerText = "Erro ao carregar.";
+                return;
+            }
 
-    if (!data || data.length === 0) {
-        if (reset) status.innerText = "Ainda não há fotos.";
-        btnContainer.style.display = "none";
-        return;
-    }
+            status.style.display = "none";
 
-    // Agrupar as novas fotos por data
-    const fotosAgrupadas = {};
-    data.forEach(foto => {
-        if (foto.name === ".emptyFolderPlaceholder") return;
-        let dataChave = foto.name.includes('__') ? foto.name.split('__')[0] : foto.created_at.split('T')[0];
-        if (!fotosAgrupadas[dataChave]) fotosAgrupadas[dataChave] = [];
-        fotosAgrupadas[dataChave].push(foto);
-    });
+            if (!data || data.length === 0) {
+                if (reset) status.innerText = "Ainda não há fotos.";
+                btnContainer.style.display = "none";
+                return;
+            }
 
-    // Ordenar e Injetar no HTML
-    const datasOrdenadas = Object.keys(fotosAgrupadas).sort().reverse();
-
-    datasOrdenadas.forEach(dataTxt => {
-        let diaWrapper = document.querySelector(`[data-dia="${dataTxt}"]`);
-        
-        // Se não existir o bloco desse dia, cria-o
-        if (!diaWrapper) {
-            let dataObj = new Date(dataTxt);
-            let dataExibicao = dataObj.toLocaleDateString('pt-PT', { 
-                weekday: 'long', day: 'numeric', month: 'long' 
+            const fotosAgrupadas = {};
+            data.forEach(foto => {
+                if (foto.name === ".emptyFolderPlaceholder") return;
+                let dataChave = foto.name.includes('__') ? foto.name.split('__')[0] : foto.created_at.split('T')[0];
+                if (!fotosAgrupadas[dataChave]) fotosAgrupadas[dataChave] = [];
+                fotosAgrupadas[dataChave].push(foto);
             });
 
-            const header = document.createElement('h2');
-            header.className = 'dia-header';
-            header.innerText = dataExibicao;
-            grid.appendChild(header);
+            const datasOrdenadas = Object.keys(fotosAgrupadas).sort().reverse();
 
-            diaWrapper = document.createElement('div');
-            diaWrapper.className = 'dia-wrapper';
-            diaWrapper.setAttribute('data-dia', dataTxt); // ID para encontrarmos depois
-            grid.appendChild(diaWrapper);
+            datasOrdenadas.forEach(dataTxt => {
+                let diaWrapper = document.querySelector(`[data-dia="${dataTxt}"]`);
+
+                if (!diaWrapper) {
+                    let dataObj = new Date(dataTxt);
+                    let dataExibicao = dataObj.toLocaleDateString('pt-PT', {
+                        weekday: 'long', day: 'numeric', month: 'long'
+                    });
+
+                    const header = document.createElement('h2');
+                    header.className = 'dia-header';
+                    header.innerText = dataExibicao;
+                    grid.appendChild(header);
+
+                    diaWrapper = document.createElement('div');
+                    diaWrapper.className = 'dia-wrapper';
+                    diaWrapper.setAttribute('data-dia', dataTxt);
+                    grid.appendChild(diaWrapper);
+                }
+
+                fotosAgrupadas[dataTxt].forEach(foto => {
+                    const { data: { publicUrl } } = _supabase.storage.from('fotos-album').getPublicUrl(foto.name);
+                    const card = document.createElement('div');
+                    card.className = 'photo-card scroll-reveal active';
+                    card.innerHTML = `<img src="${publicUrl}" loading="lazy" onclick="abrirModal('${publicUrl}')" style="cursor: pointer;">`;
+                    diaWrapper.appendChild(card);
+                });
+            });
+
+            if (data.length === limitePorCarga) {
+                btnContainer.style.display = "block";
+            } else {
+                btnContainer.style.display = "none";
+            }
+
+            if (typeof aplicarEfeitoScroll === "function") {
+                setTimeout(aplicarEfeitoScroll, 200);
+            }
         }
 
-        // Localiza esta parte no teu código e substitui:
-fotosAgrupadas[dataTxt].forEach(foto => {
-    const { data: { publicUrl } } = _supabase.storage.from('fotos-album').getPublicUrl(foto.name);
-    const card = document.createElement('div');
-    card.className = 'photo-card scroll-reveal active';
-    
-    // Adicionamos o onclick aqui:
-    card.innerHTML = `<img src="${publicUrl}" loading="lazy" onclick="abrirModal('${publicUrl}')" style="cursor: pointer;">`;
-    
-    diaWrapper.appendChild(card);
-});
-    });
+        // FUNÇÃO PARA O BOTÃO CARREGAR MAIS
+        window.carregarMaisFotos = function () {
+            offsetGlobal += limitePorCarga;
+            carregarFotosDoStorage(false);
+        };
 
-    // Mostrar botão "Mostrar Mais" se vierem 100 fotos (sinal de que há mais)
-    if (data.length === limitePorCarga) {
-        btnContainer.style.display = "block";
-    } else {
-        btnContainer.style.display = "none";
-    }
+        // FUNÇÕES DO MODAL (LIGHTBOX)
+        window.abrirModal = function (url) {
+            const modal = document.getElementById('foto-modal');
+            const imgFull = document.getElementById('img-full');
+            modal.style.display = "flex";
+            imgFull.src = url;
+            document.body.style.overflow = "hidden";
+        }
 
-    if (typeof aplicarEfeitoScroll === "function") {
-        setTimeout(aplicarEfeitoScroll, 200);
-    }
-}
+        window.fecharModal = function () {
+            const modal = document.getElementById('foto-modal');
+            modal.style.display = "none";
+            document.body.style.overflow = "auto";
+        }
 
-// FUNÇÃO PARA O BOTÃO
-window.carregarMaisFotos = function() {
-    offsetGlobal += limitePorCarga;
-    carregarFotosDoStorage(false); // false para não apagar o que já carregou
-};
-
-// Inicia a primeira carga
-carregarFotosDoStorage();
-
-
-window.abrirModal = function(url) {
-    const modal = document.getElementById('foto-modal');
-    const imgFull = document.getElementById('img-full');
-    modal.style.display = "flex";
-    imgFull.src = url;
-    document.body.style.overflow = "hidden"; // Impede o scroll do fundo
-}
-
-window.fecharModal = function() {
-    const modal = document.getElementById('foto-modal');
-    modal.style.display = "none";
-    document.body.style.overflow = "auto"; // Devolve o scroll
-}
-
+        // Inicia a primeira carga
+        carregarFotosDoStorage();
     </script>
-    <div id="foto-modal" class="modal" onclick="fecharModal()">
-    <span class="fechar-modal">&times;</span>
-    <img class="modal-conteudo" id="img-full">
-</div>
 </body>
+
 </html>
