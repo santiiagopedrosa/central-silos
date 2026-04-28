@@ -132,14 +132,17 @@ async function carregarFotosDoStorage(reset = true) {
             grid.appendChild(diaWrapper);
         }
 
-        // Adicionar fotos ao wrapper (novo ou já existente)
-        fotosAgrupadas[dataTxt].forEach(foto => {
-            const { data: { publicUrl } } = _supabase.storage.from('fotos-album').getPublicUrl(foto.name);
-            const card = document.createElement('div');
-            card.className = 'photo-card scroll-reveal active';
-            card.innerHTML = `<img src="${publicUrl}" loading="lazy">`;
-            diaWrapper.appendChild(card);
-        });
+        // Localiza esta parte no teu código e substitui:
+fotosAgrupadas[dataTxt].forEach(foto => {
+    const { data: { publicUrl } } = _supabase.storage.from('fotos-album').getPublicUrl(foto.name);
+    const card = document.createElement('div');
+    card.className = 'photo-card scroll-reveal active';
+    
+    // Adicionamos o onclick aqui:
+    card.innerHTML = `<img src="${publicUrl}" loading="lazy" onclick="abrirModal('${publicUrl}')" style="cursor: pointer;">`;
+    
+    diaWrapper.appendChild(card);
+});
     });
 
     // Mostrar botão "Mostrar Mais" se vierem 100 fotos (sinal de que há mais)
@@ -163,6 +166,25 @@ window.carregarMaisFotos = function() {
 // Inicia a primeira carga
 carregarFotosDoStorage();
 
+
+window.abrirModal = function(url) {
+    const modal = document.getElementById('foto-modal');
+    const imgFull = document.getElementById('img-full');
+    modal.style.display = "flex";
+    imgFull.src = url;
+    document.body.style.overflow = "hidden"; // Impede o scroll do fundo
+}
+
+window.fecharModal = function() {
+    const modal = document.getElementById('foto-modal');
+    modal.style.display = "none";
+    document.body.style.overflow = "auto"; // Devolve o scroll
+}
+
     </script>
+    <div id="foto-modal" class="modal" onclick="fecharModal()">
+    <span class="fechar-modal">&times;</span>
+    <img class="modal-conteudo" id="img-full">
+</div>
 </body>
 </html>
