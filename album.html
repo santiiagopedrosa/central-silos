@@ -18,11 +18,13 @@
             <a href="index.html">
                 <img src="imagem_centralsilos.jpg" alt="Logo" class="logo-img">
             </a>
+
             <ul class="nav-list">
                 <li><a href="index.html">Home</a></li>
                 <li><a href="album.html">Momentos</a></li>
                 <li><a href="admin.html">Admin</a></li>
             </ul>
+
             <div class="menu-toggle" id="mobile-menu">
                 <span class="bar"></span>
                 <span class="bar"></span>
@@ -30,6 +32,7 @@
             </div>
         </div>
     </nav>
+
 
     <header class="album-intro">
         <h1 class="scroll-reveal">GALERIA <span>SILOS</span></h1>
@@ -205,6 +208,25 @@
         }
 
         carregarFotosDoStorage();
+        // LÓGICA DO MENU MOBILE
+const mobileMenu = document.getElementById('mobile-menu');
+const navList = document.querySelector('.nav-list');
+
+if (mobileMenu) {
+    mobileMenu.addEventListener('click', () => {
+        // Alterna a classe 'active' na lista e a animação no botão
+        navList.classList.toggle('active');
+        mobileMenu.classList.toggle('is-active');
+    });
+}
+
+// Fechar o menu ao clicar num link (opcional, mas bom para UX)
+document.querySelectorAll('.nav-list a').forEach(link => {
+    link.addEventListener('click', () => {
+        navList.classList.remove('active');
+        mobileMenu.classList.remove('is-active');
+    });
+});
     </script>
 </body>
 </html>
