@@ -805,3 +805,24 @@ footer p { color: var(--text-muted); margin-top: 20px; font-size: 0.9rem; }
     font-weight: bold;
     cursor: pointer;
 }
+
+.btn-mais {
+    background-color: var(--yellow, #f4ea8c);
+    color: #000;
+    border: none;
+    padding: 15px 30px;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 900;
+    font-size: 0.9rem;
+    letter-spacing: 2px;
+    cursor: pointer;
+    border-radius: 50px;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+}
+
+.btn-mais:hover {
+    transform: scale(1.05);
+    background-color: #fff;
+    box-shadow: 0 5px 15px rgba(244, 234, 140, 0.3);
+}

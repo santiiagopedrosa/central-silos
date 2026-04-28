@@ -180,7 +180,7 @@
     // 1. Ir buscar a lista de fotos
     const { data, error } = await _supabase.storage
         .from('fotos-album')
-        .list('', { limit: 150, sortBy: { column: 'name', order: 'desc' } });
+        .list('', { limit: 500, sortBy: { column: 'name', order: 'desc' } });
 
     if (error) {
         gallery.innerHTML = "Erro ao carregar fotos.";
